@@ -44,7 +44,7 @@ export default function KanbanDashboard() {
       {/* Back Button */}
       <button
         onClick={() => navigate("/")}
-        className="mb-6 flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl shadow hover:shadow-md transition"
+        className="mb-6 flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl shadow hover:shadow-md transition cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -8,11 +8,11 @@ const Dashboard = () => {
   const [tickets, setTickets] = useState([]);
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [isLight, setIsLight] = useState(true); 
+  const [isLight, setIsLight] = useState(true);
 
   const navigate = useNavigate();
 
-  
+
   useEffect(() => {
     const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
     setTickets(storedTickets);
@@ -56,25 +56,50 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
-        isLight ? "bg-gray-50 text-gray-900" : "bg-gray-900 text-gray-100"
-      }`}
+      className={`min-h-screen transition-colors duration-300 ${isLight ? "bg-gray-50 text-gray-900" : "bg-gray-900 text-gray-100"
+        }`}
     >
       {/* Navbar */}
       <nav
-        className={`fixed top-0 left-0 w-full z-10 border-b p-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0 shadow-sm transition-colors duration-300 ${
-          isLight ? "bg-white border-gray-300" : "bg-gray-800 border-gray-700"
-        }`}
+        className={`fixed top-0 left-0 w-full z-10 border-b p-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0 shadow-sm transition-colors duration-300 ${isLight ? "bg-white border-gray-300" : "bg-gray-800 border-gray-700"
+          }`}
       >
         <h1 className="text-2xl font-bold px-2">Ticket System</h1>
 
         <div className="flex flex-wrap gap-3 items-center">
 
-            <button className="border border-gray-300 p-2.5 rounded" onClick={()=>{navigate('/drag')}}> Kanaban Board</button>
+          <button
+            onClick={() => navigate("/drag")}
+            className="flex items-center gap-2 border border-gray-300 px-3 py-2 rounded-lg bg-white shadow-sm hover:shadow-md hover:bg-gray-50 transition group cursor-pointer"
+          >
+            {/* Text (hidden until hover) */}
+            <p className="hidden group-hover:block font-medium text-gray-700">
+              Kanban Board
+            </p>
+
+            {/* Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-gray-600 group-hover:text-blue-500 transition"
+            >
+              <path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" />
+            </svg>
+          </button>
+
+
+
           {/* Theme Toggle */}
           <button
             onClick={() => setIsLight(!isLight)}
-            className="p-2 border rounded-lg shadow-sm hover:shadow transition"
+            className="p-2 border rounded-lg shadow-sm hover:shadow transition border-gray-300 cursor-pointer"
           >
             {isLight ? (
               <svg
@@ -109,26 +134,61 @@ const Dashboard = () => {
           </button>
 
           {/* Report Button */}
+
+
           <button
-            className="p-2 border rounded shadow hover:shadow-md transition"
             onClick={() => navigate("/report")}
+            className="flex items-center gap-2 border border-gray-300 px-3 py-2 rounded-lg bg-white shadow-sm hover:shadow-md hover:bg-gray-50 transition group cursor-pointer"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-column-icon lucide-chart-no-axes-column"><path d="M5 21v-6"/><path d="M12 21V3"/><path d="M19 21V9"/></svg>
+            {/* Text (hidden until hover) */}
+            <p className="hidden group-hover:block font-medium text-gray-700">
+              Reports
+            </p>
+
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-column-icon lucide-chart-no-axes-column"><path d="M5 21v-6" /><path d="M12 21V3" /><path d="M19 21V9" /></svg>
+
           </button>
 
+
+
           {/* Add Ticket */}
+          
           <button
             onClick={() => navigate("/form")}
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition"
+            className="flex items-center gap-2 border border-blue-500 px-4 py-2 rounded-lg 
+             bg-blue-500 text-white font-medium shadow-sm hover:shadow-md 
+             hover:bg-blue-600 transition cursor-pointer"
           >
-           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-input-icon lucide-folder-input"><path d="M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"/><path d="M2 13h10"/><path d="m9 16 3-3-3-3"/></svg>
+            {/* Text always visible */}
+            <p className="font-medium">Add Ticket</p>
+
+            {/* Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-white"
+            >
+              <path d="M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1" />
+              <path d="M2 13h10" />
+              <path d="m9 16 3-3-3-3" />
+            </svg>
           </button>
+
+
 
           {/* Priority Filter */}
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="border px-3 py-2 rounded-lg shadow-sm border-gray-300"
+            className="border px-3 py-2 rounded-lg shadow-sm border-gray-300 cursor-pointer"
           >
             <option value="All">All Priorities</option>
             <option value="High">High</option>
@@ -140,7 +200,7 @@ const Dashboard = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border px-3 py-2 rounded-lg shadow-sm border-gray-300"
+            className="border px-3 py-2 rounded-lg shadow-sm border-gray-300 cursor-pointer"
           >
             <option value="All">All Statuses</option>
             <option value="Open">Open</option>
@@ -148,34 +208,36 @@ const Dashboard = () => {
             <option value="Resolved">Resolved</option>
           </select>
         </div>
-      </nav>
+      </nav >
 
       {/* Push content below navbar */}
-      <div className="pt-28 px-6">
-        {filteredTickets.length === 0 ? (
-          <p className="text-gray-500 text-center mt-10 flex justify-center align-middle">
-            No tickets found
-          </p>
-        ) : (
-          <div
-            className="grid gap-8 mt-5
+      <div div className="pt-28 px-6" >
+        {
+          filteredTickets.length === 0 ? (
+            <p className="text-gray-500 text-center mt-10 flex justify-center align-middle">
+              No tickets found
+            </p>
+          ) : (
+            <div
+              className="grid gap-8 mt-5
               sm:grid-cols-1
               md:grid-cols-2
               lg:grid-cols-3
               xl:grid-cols-4"
-          >
-            {filteredTickets.map((ticket, index) => (
-              <Card
-                key={index}
-                ticket={ticket}
-                onDelete={handleDelete}
-                onUpdate={handleUpdate}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+            >
+              {filteredTickets.map((ticket, index) => (
+                <Card
+                  key={index}
+                  ticket={ticket}
+                  onDelete={handleDelete}
+                  onUpdate={handleUpdate}
+                />
+              ))}
+            </div>
+          )
+        }
+      </div >
+    </div >
   );
 };
 

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
   const [tickets, setTickets] = useState([]);
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [isLight, setIsLight] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false); // NEW
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -24,22 +25,57 @@ const Dashboard = () => {
   }, [isLight]);
 
   const handleDelete = (ticketId) => {
-    const updatedTickets = tickets.filter(
-      (ticket) => ticket.ticketId !== ticketId
-    );
-    setTickets(updatedTickets);
-    localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This ticket will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedTickets = tickets.filter(
+          (ticket) => ticket.ticketId !== ticketId
+        );
+        setTickets(updatedTickets);
+        localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+
+        Swal.fire("Deleted!", "The ticket has been deleted.", "success");
+      }
+    });
   };
 
   const handleUpdate = (ticketId, updatedTicket) => {
-    const updatedTickets = tickets.map((t) =>
-      t.ticketId === ticketId
-        ? { ...t, ...updatedTicket, updatedAt: new Date().toLocaleString() }
-        : t
-    );
-    setTickets(updatedTickets);
-    localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This ticket will be updated!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedTickets = tickets.map((t) =>
+          t.ticketId === ticketId
+            ? { ...t, ...updatedTicket, updatedAt: new Date().toLocaleString() }
+            : t
+        );
+        setTickets(updatedTickets);
+        localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Your work has been saved",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
   };
+
 
   const filteredTickets = tickets.filter((ticket) => {
     const priorityMatch =
@@ -51,15 +87,13 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
-        isLight ? "bg-gray-50 text-gray-900" : "bg-gray-900 text-gray-100"
-      }`}
+      className={`min-h-screen transition-colors duration-300 ${isLight ? "bg-gray-50 text-gray-900" : "bg-gray-900 text-gray-100"
+        }`}
     >
       {/* Navbar */}
       <nav
-        className={`fixed top-0 left-0 w-full z-10 border-b p-4 flex justify-between items-center shadow-sm transition-colors duration-300 ${
-          isLight ? "bg-white border-gray-300" : "bg-gray-800 border-gray-700"
-        }`}
+        className={`fixed top-0 left-0 w-full z-10 border-b p-4 flex justify-between items-center shadow-sm transition-colors duration-300 ${isLight ? "bg-white border-gray-300" : "bg-gray-800 border-gray-700"
+          }`}
       >
         <h1 className="text-2xl font-bold px-2">Ticket System</h1>
 
@@ -69,7 +103,6 @@ const Dashboard = () => {
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? (
-            // Close icon
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -84,7 +117,6 @@ const Dashboard = () => {
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           ) : (
-            // Hamburger icon
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -104,15 +136,17 @@ const Dashboard = () => {
 
         {/* Nav Items */}
         <div
-          className={`flex flex-col md:flex-row gap-3 items-center absolute md:static top-full left-0 w-full md:w-auto p-4 md:p-0 transition-all duration-300 ${
-            menuOpen
+          className={`flex flex-col md:flex-row gap-3 items-center absolute md:static top-full left-0 w-full md:w-auto p-4 md:p-0 transition-all duration-300 ${menuOpen
               ? "block bg-white dark:bg-gray-800 shadow-md md:shadow-none"
               : "hidden md:flex"
-          }`}
+            }`}
         >
           {/* Kanban */}
           <button
-            onClick={() => navigate("/drag")}
+            onClick={() => {
+              navigate("/drag");
+              setMenuOpen(false);
+            }}
             className="flex items-center gap-2 border border-gray-300 px-3 py-2 rounded-lg bg-white shadow-sm hover:shadow-md hover:bg-gray-50 transition group cursor-pointer"
           >
             <p className="hidden group-hover:block font-medium text-gray-700">
@@ -136,7 +170,10 @@ const Dashboard = () => {
           {/* Theme Toggle */}
           <button
             onClick={() => setIsLight(!isLight)}
-            className="p-2 border rounded-lg shadow-sm hover:shadow transition border-gray-300 cursor-pointer bg-white"
+            className={`p-2 border rounded-lg shadow-sm hover:shadow transition cursor-pointer ${isLight
+                ? "bg-white border-gray-300"
+                : "bg-gray-700 border-gray-600"
+              }`}
           >
             {isLight ? (
               <svg
@@ -148,7 +185,6 @@ const Dashboard = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-moon"
               >
                 <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
               </svg>
@@ -162,7 +198,6 @@ const Dashboard = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-sun"
               >
                 <circle cx="12" cy="12" r="4" />
                 <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
@@ -172,7 +207,10 @@ const Dashboard = () => {
 
           {/* Reports */}
           <button
-            onClick={() => navigate("/report")}
+            onClick={() => {
+              navigate("/report");
+              setMenuOpen(false);
+            }}
             className="flex items-center gap-2 border border-gray-300 px-3 py-2 rounded-lg bg-white shadow-sm hover:shadow-md hover:bg-gray-50 transition group cursor-pointer"
           >
             <p className="hidden group-hover:block font-medium text-gray-700">
@@ -196,8 +234,11 @@ const Dashboard = () => {
 
           {/* Add Ticket */}
           <button
-            onClick={() => navigate("/form")}
-            className="flex items-center gap-2 border border-blue-500 px-4 py-2 rounded-lg bg-blue-500 text-white font-medium shadow-sm hover:shadow-md hover:bg-blue-600 transition cursor-pointer "
+            onClick={() => {
+              navigate("/form");
+              setMenuOpen(false);
+            }}
+            className="flex items-center gap-2 border border-blue-500 px-4 py-2 rounded-lg bg-blue-500 text-white font-medium shadow-sm hover:shadow-md hover:bg-blue-600 transition cursor-pointer"
           >
             <p className="font-medium">Add Ticket</p>
           </button>
@@ -248,12 +289,10 @@ const Dashboard = () => {
             </svg>
           </p>
         ) : (
-          <div
-            className="grid gap-8 mt-0 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:mt-10 lg:mt-0"
-          >
-            {filteredTickets.map((ticket, index) => (
+          <div className="grid gap-8 mt-0 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:mt-10 lg:mt-0">
+            {filteredTickets.map((ticket) => (
               <Card
-                key={index}
+                key={ticket.ticketId}
                 ticket={ticket}
                 onDelete={handleDelete}
                 onUpdate={handleUpdate}
